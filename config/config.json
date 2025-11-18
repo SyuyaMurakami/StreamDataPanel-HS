@@ -1,0 +1,21 @@
+{
+    "APP_CONFIG": {
+        "WEB_SOCKET": "ws://localhost:9005/ws",
+        "TITLE": "Stream Data Panel",
+        "CHART_TYPE": "ChartType",
+        "KEY_WORD": "KeyWord",
+        "SUBSCRIBE": "SUBSCRIBE",
+        "FAILED": "FAILED",
+        "SUCCESS": "SUCCESS"
+    },
+    "WARP_CONFIG": {
+        "PORT": 9001,
+        "DIR": "web",
+        "ROUTE": "config"
+    },
+    "WEBSOCKET_CONFIG": {
+        "HOST": "localhost",
+        "PORT": 9005,
+        "ROUTE": "/ws"
+    }
+}
