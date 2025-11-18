@@ -2,35 +2,33 @@
 
 ## Introduction
 
-This is the Haskell Version of StreamDataPanel, which is a web app, used to show frequently-freshed data as line chart, bar chart, pie chart, radar chart, scatter chart or surface chart. It is based on eel with python, optimized for speed.
+StreamDataPanel is a web app, used to show frequently-freshed data as line chart, bar chart, pie chart, radar chart, scatter chart or surface chart. StreamDataPanel is optimized for speed. This is the Haskell Version of StreamDataPanel while the original version is based on eel with python.
 
-The original project is based on python, providing with a server and client, while this project is based purely on Haskell. You can start a server or client with Haskell natively.
+This package provides both server API and client app, which are developped with pure Haskell.
 
 To see the original project: [StreamDataPanel](https://github.com/SyuyaMurakami/StreamDataPanel)
 
-To see the document of StreamDataPanel: [Document](https://streamdatapanel-doc.readthedocs.io/en/latest/index.html)
-
-This document is based on python version, however, web design and page interaction is totally the same with those of haskell version.
+To see the document of StreamDataPanel (Original Python Version): [Document](https://streamdatapanel-doc.readthedocs.io/en/latest/index.html)
 
 ## Install
 
-Download this package by click the green ``Code`` button and click ``Download ZIP``, unzip it or use the following to clone this package:
+Download this package by click the green ``Code`` button in this page and click ``Download ZIP``, then unzip it. Or you can use the following to clone this repository:
 
     git clone https://github.com/SyuyaMurakami/StreamDataPanel-HS.git
 
-After this, change directory to project directory:
+Navigate to repository root directory:
 
     cd StreamDataPanel-HS-main
 
-Use `cabal` to build package:
+Use `cabal` to build:
 
     cabal build
 
-Then if no error is printed, it means success. You can continue to install it into your ghc:
+If no error information is printed, you can continue to install it by:
 
     cabal install
 
-If everything goes smoothly, two executable file should be added into your system, you can find the path where they are in your terminal. Do not forget to add this path into your shell config. If you already did this, just neglect this remind.
+Finally, if everything goes smoothly, two executable file should be added into your system. Do not forget to add path of excutable files into your shell config. 
 
 ## Quick View
 
@@ -51,9 +49,9 @@ One picture is better than a thousand words:
 
 To see functions of StreamDataPanel, you can firstly run a test.
 
-After installing it by ``cabal install``, use ``startSDP`` in terminal to run a test APP client. 
+After installing it by ``cabal install``, use ``startSDP`` in **terminal** to run a test APP client. 
 
-Then open another terminal and run ``simulateSDP`` to start a server sample.
+Then open another **terminal** and run ``simulateSDP`` to start a server sample.
 
 By default, the web app should be running at http://localhost:9001. Visit it and type one of the following words below into ``ChartType`` input: ``line`` , ``bar`` , ``sequence`` , ``lines`` , ``bars`` , ``sequences`` , ``pie`` , ``radar`` , ``scatter`` , ``surface`` , ``area`` , ``areas``, ``gauge`` ``text``. Then type ``test`` into ``KeyWord`` input. Click ``Subscribe`` to see if it runs correctly. If You see a chart with data freshed every second, it means success.
 
@@ -61,7 +59,7 @@ By default, the web app should be running at http://localhost:9001. Visit it and
 
 ### Start API
 
-The first thing is to import and start API. Import it by:
+The first thing is to import and start API:
 
     import StreamDataPanel
 
@@ -69,7 +67,9 @@ Start API in your ``main :: IO ()`` by:
 
     start :: String -> Int -> String -> IO (DataMap, ThreadId)
 
-It starts a background thread to allow users to register charts, and returns a register book and a thread id. The first parameter is host address, the second is port and the third is route path. If you do not change the client config, then you should always use port as ``9005``, use route as ``/ws``. They are default configs align with client. An example is as follows:
+It starts a background thread to allow users to register charts, and returns a register book and a thread id. 
+
+The first parameter is host address, the second is port and the third is route path. If you do not change the client config, then you should always use port as ``9005``, use route as ``/ws``. They are default configs **align** with client. An example is as follows:
 
     (manager, tid) <- start "localhost" 9005 "/ws"
 
@@ -77,7 +77,7 @@ If you start API by ``start`` function, do not forget to kill the background thr
 
     killThread tid
 
-You can also use ``with`` function to avoid manually kill thread every time you use it:
+You can also use ``with`` function to avoid manually kill thread:
 
     with :: String -> Int -> String -> (DataMap -> IO ()) -> IO ()
 
@@ -103,9 +103,11 @@ You will need a ``DataKey`` to mark your data stream. ``DataKey`` is defined as:
 
     type DataKey = (String, String)
 
-The first string is used to tell what kind of charts this data should be showed by, the second string is the key words of subscription, it will be used as the title of your charts.  
+The first string is used to tell what kind of chart this data should be shown as.
 
-To register your data, you will also need an initial value. Different chart type requires different data form.
+The second string is the key word of subscription, it will be used as the title of your chart.  
+
+To register your data, you will also need an initial value. Different chart type requires different data form:
 
     type NumberData = Double -- For line, bar, sequence
     type StringData = String -- For text
@@ -116,7 +118,7 @@ To register your data, you will also need an initial value. Different chart type
     type GaugeData = (String, (Double, Double), Double) -- For gauge
     type RadarData = ([String], [Double], [Double]) -- For radar
 
-Then you can register your data stream with ``add`` function. It is typed:
+Then you can register your data stream with ``add`` function. It is typed as:
 
     add :: (Streamable a) => DataMap -> DataKey -> a -> IO DataValue
 
@@ -134,7 +136,7 @@ An example is like:
 
     linesChart `fresh` (["A", "B"], [1.7, 2.2] :: [Double])
 
-Any web that subscribed this stream will automatically fresh the latest data you just put in.
+Any web that subscribed this stream will automatically fresh once you call this function.
 
 ## Usage Of Client
 
@@ -142,7 +144,11 @@ You can start web app by running the following in your **terminal**:
 
     startSDP
 
-Be default, the app will be run at ``http://localhost:9001``. Open a browser and visit it. Again, we continue our example, type ``lines`` into ``ChartType`` input, then type ``test`` into ``KeyWord`` input, click ``Subscribe``. You should see your chart. After you fresh any data in your server, you should be able to see the change through your web app.
+Be default, the app will be run at ``http://localhost:9001``. 
+
+Open a browser and visit it. Again, we continue our example, type ``lines`` into ``ChartType`` input, then type ``test`` into ``KeyWord`` input, click ``Subscribe``. You should see your chart. 
+
+After you fresh any data in your server, you should be able to see the change through your web app.
 
 For detail of web interaction, you can refer to [Page Interaction](https://streamdatapanel-doc.readthedocs.io/en/latest/Web.html#page-interaction).
 
